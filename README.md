@@ -8,7 +8,7 @@ Docker image for run Laravel on PHP FPM
 `docker run -d --name laravel -v yourlaravel:/code richxsterk/laravel-fpm`
 
 ## example to run along with nginx on docker compose
-`
+``` yaml
 # docker-compose.yml
 version: '3'
 services: 
@@ -32,10 +32,10 @@ services:
       POSTGRES_PASSWORD: postgres
     volumes:
       - yourdata:/var/lib/postgresql/data
-`
+```
 
 ## nginx config file for laravel
-`
+``` bash
 # site.conf
 server {
     listen 80;
@@ -61,7 +61,7 @@ server {
         allow all;
     }
 }
-`
+```
 
 ## finally run docker compose up
 `docker-compose up`
