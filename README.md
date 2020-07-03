@@ -39,26 +39,24 @@ services:
 # site.conf
 server {
     listen 80;
-    server_name mindbox.app;
+    server_name laravel.test;
     root /code/public;
     index index.php;
     charset utf-8;
+    client_max_body_size 20M;
     location / {
         try_files $uri $uri/ /index.php?$query_string;
+        sendfile_max_chunk 512k;
     }
     location ~ \.php$ {
+        include fastcgi_params;
         fastcgi_split_path_info ^(.+\.php)(/.+)$;
         fastcgi_pass php:9000;
-        fastcgi_index index.php;
-        include fastcgi_params;
+        fastcgi_param REQUEST_METHOD $request_method;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-        fastcgi_param PATH_INFO $fastcgi_path_info;
     }
-    location ~ /\.ht {
+    location ~ /\.(?!well-known).* {
         deny all;
-    }
-    location ~ /.well-known {
-        allow all;
     }
 }
 ```
