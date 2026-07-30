@@ -1,10 +1,13 @@
 FROM php:7.4.33-fpm
 
-RUN LC_ALL=C.UTF-8 && apt-get -qq update && apt-get -qq install -y libpq-dev libicu-dev libpng-dev libfontconfig1 libxrender1 libxtst6 libzip-dev libfreetype6-dev libjpeg62-turbo-dev zip cron xfonts-utils xz-utils fontconfig libx11-dev libxext6 libxrender-dev libssl-dev xfonts-75dpi xfonts-base tzdata
+RUN LC_ALL=C.UTF-8 && apt-get -qq update && apt-get -qq install -y libpq-dev libicu-dev libpng-dev libfontconfig1 libxrender1 libxtst6 libzip-dev libfreetype6-dev libjpeg62-turbo-dev libmagickwand-dev poppler-utils zip cron xfonts-utils xz-utils fontconfig libx11-dev libxext6 libxrender-dev libssl-dev xfonts-75dpi xfonts-base tzdata
 
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 RUN docker-php-ext-install -j$(nproc) pgsql pdo_pgsql bcmath intl gd zip opcache exif sockets
-RUN pecl install timezonedb && docker-php-ext-enable timezonedb
+RUN pecl install timezonedb imagick-3.7.0 \
+    && docker-php-ext-enable timezonedb imagick \
+    && php -r 'exit(extension_loaded("imagick") ? 0 : 1);' \
+    && command -v pdftoppm
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
